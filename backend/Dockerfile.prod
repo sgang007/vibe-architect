@@ -1,0 +1,31 @@
+# ── Vibe Architect — Production Dockerfile ────────────────────────────────────
+# Lightweight image: no NLP models, no spaCy, no transformers.
+# ENABLE_NLP_LAYER=false means the app uses the fast regex classifier instead.
+# Build time: ~2 min  |  Image size: ~400 MB  (vs 3+ GB for full NLP image)
+# ──────────────────────────────────────────────────────────────────────────────
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Minimal system deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python deps — production-only (no spaCy/transformers/torch)
+COPY requirements-prod.txt .
+RUN pip install --no-cache-dir -r requirements-prod.txt
+
+# Application code
+COPY app/ ./app/
+
+# Render injects $PORT; default to 8000 for local docker run
+ENV PORT=8000
+
+EXPOSE $PORT
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:$PORT/health || exit 1
+
+CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2

@@ -1,0 +1,54 @@
+# ── Vibe Architect — Render deployment manifest ───────────────────────────────
+# Deploy the FastAPI backend as a Render Web Service.
+# Render handles persistent HTTP connections which is required for SSE streaming.
+#
+# Usage:
+#   1. Push this repo to GitHub
+#   2. Go to dashboard.render.com → New → Blueprint → connect repo
+#   3. Render auto-detects this file and creates the service
+#   4. Set the secret env vars in the Render dashboard (GROQ_API_KEY, ANTHROPIC_API_KEY)
+# ──────────────────────────────────────────────────────────────────────────────
+
+services:
+  - type: web
+    name: vibe-architect-api
+    runtime: docker
+    rootDir: backend               # Render uses this as the build context
+    dockerfilePath: Dockerfile.prod  # Relative to rootDir
+    region: oregon                 # Change to a region closer to your users
+    plan: free                     # free tier — upgrade for production
+
+    healthCheckPath: /health
+
+    envVars:
+      # ── LLM provider ────────────────────────────────────────────────────────
+      - key: LLM_PROVIDER
+        value: groq
+
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+
+      - key: GROQ_API_KEY
+        sync: false          # Set this manually in the Render dashboard
+
+      - key: ANTHROPIC_MODEL
+        value: claude-haiku-4-5-20251001
+
+      - key: ANTHROPIC_API_KEY
+        sync: false          # Set this manually in the Render dashboard
+
+      # ── App ─────────────────────────────────────────────────────────────────
+      - key: APP_ENV
+        value: production
+
+      - key: ENABLE_NLP_LAYER
+        value: "false"       # Keeps the image small; NLP not needed for core flow
+
+      - key: SESSION_BACKEND
+        value: memory        # In-memory sessions (no Redis needed on free tier)
+
+      - key: CORS_ORIGINS
+        value: https://vibe-architect.netlify.app  # Update to your Netlify URL
+
+      - key: LOG_LEVEL
+        value: INFO

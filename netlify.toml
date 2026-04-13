@@ -1,0 +1,47 @@
+# ── Vibe Architect — Netlify configuration ────────────────────────────────────
+# Frontend is built from the /frontend directory and served as a static SPA.
+# All /api/* requests are proxied to the Render backend so the JS bundle
+# never needs a hard-coded backend URL — Netlify rewrites handle it.
+#
+# Required env var in Netlify dashboard → Site settings → Environment variables:
+#   VIBE_BACKEND_URL = https://vibe-architect-api.onrender.com
+# ──────────────────────────────────────────────────────────────────────────────
+
+[build]
+  base    = "frontend"
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# ── API proxy → Render backend ────────────────────────────────────────────────
+# Netlify rewrites support streaming (SSE) when proxying to external origins.
+# The :VIBE_BACKEND_URL placeholder is substituted from the Netlify env var
+# at deploy time by the deploy.sh script (netlify env:set VIBE_BACKEND_URL ...).
+[[redirects]]
+  from   = "/api/*"
+  to     = ":VIBE_BACKEND_URL/api/:splat"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/health"
+  to     = ":VIBE_BACKEND_URL/health"
+  status = 200
+  force  = true
+
+# ── SPA fallback — must be LAST so API routes match first ─────────────────────
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# ── Security headers ──────────────────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    X-XSS-Protection       = "1; mode=block"
