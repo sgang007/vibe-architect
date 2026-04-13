@@ -12,11 +12,13 @@
 services:
   - type: web
     name: vibe-architect-api
-    runtime: docker
-    rootDir: backend               # Render uses this as the build context
-    dockerfilePath: Dockerfile.prod  # Relative to rootDir
-    region: oregon                 # Change to a region closer to your users
-    plan: free                     # free tier — upgrade for production
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: backend
+
+    buildCommand: pip install -r requirements-prod.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
 
     healthCheckPath: /health
 
@@ -42,10 +44,10 @@ services:
         value: production
 
       - key: ENABLE_NLP_LAYER
-        value: "false"       # Keeps the image small; NLP not needed for core flow
+        value: "false"
 
       - key: SESSION_BACKEND
-        value: memory        # In-memory sessions (no Redis needed on free tier)
+        value: memory
 
       - key: CORS_ORIGINS
         value: https://vibe-architect.netlify.app  # Update to your Netlify URL
