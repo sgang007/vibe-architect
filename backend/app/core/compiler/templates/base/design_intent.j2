@@ -1,0 +1,29 @@
+## Design Intent
+
+{% set mood_map = {
+    "marketplace":   "trustworthy and clean. Think Airbnb: generous white space, photography-forward, clear CTAs",
+    "booking":       "calm and efficient. Think Calendly: minimal chrome, clear time/date display, confidence-building",
+    "saas":          "professional and data-dense. Think Linear: dark accents, tight typography, keyboard-friendly",
+    "social":        "warm and expressive. Think early Instagram: rounded corners, soft shadows, content-first",
+    "productivity":  "focused and distraction-free. Think Notion: muted palette, clear hierarchy, expandable content",
+    "ecommerce":     "conversion-optimised and visual. Think Shopify: product imagery dominant, clear pricing",
+    "finance":       "serious and precise. Think Stripe dashboard: monochrome base, green/red for states, data tables",
+    "health":        "reassuring and clinical. Think health apps: soft blues/greens, rounded cards, progress indicators",
+    "default":       "modern and clean. Generous whitespace, clear hierarchy, accessible colour contrast"
+} %}
+Visual tone: {{ mood_map.get(app_domain, mood_map["default"]) }}.
+
+Colour palette: Use a {% if tech_profile.primary_platform == "mobile" %}mobile-first{% else %}desktop-optimised{% endif %} layout.
+Reserve red exclusively for destructive actions and error states.
+Reserve green exclusively for success states and confirmations.
+
+Typography: Use a system font stack for body text (performance-first).
+{% if app_domain in ["saas", "finance", "productivity"] %}
+Use a monospace font for all data values, IDs, and numeric fields.
+{% endif %}
+
+Interaction style: All primary CTAs must have a visible loading state.
+Form inputs must show inline validation — do not use alert() dialogs.
+{% if tech_profile.primary_platform in ["mobile", "both"] %}
+All tap targets must be minimum 44×44px. Bottom navigation required.
+{% endif %}

@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -m venv .venv)",
+      "Bash(.venv/bin/pip install:*)",
+      "Bash(.venv/bin/python3 -c ':*)",
+      "Bash(.venv/bin/python3 --version)",
+      "Bash(ENABLE_NLP_LAYER=false GROQ_API_KEY=test REDIS_URL=redis://localhost:6379 .venv/bin/python3 -m pytest tests/ -v --tb=short)",
+      "Bash(ENABLE_NLP_LAYER=false GROQ_API_KEY=test REDIS_URL=redis://localhost:6379 .venv/bin/python3 -m pytest tests/ -v --tb=short -q)",
+      "Bash(cp .env.example backend/.env)",
+      "Bash(redis-cli ping:*)",
+      "Bash(ENABLE_NLP_LAYER=false .venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload)",
+      "Bash(curl -s http://localhost:8000/)",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/enrichment/answer -H 'Content-Type: application/json' -d '{\"session_id\": \"d9c7fd61-faad-4e22-9f8f-1468c957e9b4\", \"answer\": \"A booking platform for hair salons where clients schedule appointments and salons manage their availability online.\"}')",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/enrichment/answer -H 'Content-Type: application/json' -d '{\"session_id\": \"d9c7fd61-faad-4e22-9f8f-1468c957e9b4\", \"answer\": \"Salon clients who are busy professionals needing quick bookings, and salon owners managing their daily schedule.\"}')",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/enrichment/answer -H 'Content-Type: application/json' -d '{\"session_id\": \"d9c7fd61-faad-4e22-9f8f-1468c957e9b4\", \"answer\": \"Clients feel organised and confident. Salons run fully booked with zero double bookings or phone tag.\"}')",
+      "Bash(curl -s http://localhost:8000/api/v1/sessions/d9c7fd61-faad-4e22-9f8f-1468c957e9b4)",
+      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(pkill -f \"uvicorn app.main\")",
+      "Bash(npx tsc:*)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(nohup npm:*)",
+      "Bash(echo \"PID: $!\")",
+      "Read(//tmp/**)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(echo \"EXIT_CODE:$?\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(kill 3232)",
+      "Bash(curl http://localhost:8000/health)",
+      "Bash(kill -9 4681 4699)",
+      "Bash(curl -s --max-time 5 http://localhost:8000/health)",
+      "Bash(curl -s --max-time 3 http://localhost:3000)",
+      "Bash(curl -s --max-time 5 'http://localhost:8000/health')",
+      "Bash(python3 -c ':*)"
+    ]
+  }
+}

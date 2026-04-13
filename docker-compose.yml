@@ -1,0 +1,48 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      args:
+        BUILD_DOWNLOAD_MODELS: "true"
+    ports:
+      - "8000:8000"
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-groq}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_MODEL=${GROQ_MODEL:-llama-3.1-70b-versatile}
+      - SESSION_BACKEND=redis
+      - REDIS_URL=redis://redis:6379
+      - MODEL_CACHE_DIR=/models
+      - ENABLE_NLP_LAYER=${ENABLE_NLP_LAYER:-true}
+      - CORS_ORIGINS=http://localhost:3000
+    volumes:
+      - model_cache:/models
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  model_cache:
+    driver: local

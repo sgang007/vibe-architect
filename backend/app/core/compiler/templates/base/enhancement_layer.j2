@@ -1,0 +1,39 @@
+## Enhancement Layer — Apply After All Screens Are Built
+
+### Point 1: Empty States
+Every screen that displays a list or data container must have a designed empty state.
+Empty states must include: an illustration or icon, a headline ("No items yet"),
+a one-sentence explanation, and a single primary CTA to create the first item.
+Do NOT show a blank white area. Do NOT show "No data found."
+
+### Point 2: Loading States
+Every async data fetch must show a skeleton UI during loading — not a spinner.
+The skeleton must match the shape of the loaded content (same number of rows,
+same card dimensions). Apply this to: all list screens, all detail screens,
+all dashboard widgets.
+
+### Point 3: Error States
+Every screen that makes a network request must handle failure gracefully.
+Show: an error icon, a plain-language message ("Could not load your data"),
+and a "Try again" button that retries the request.
+Never show a raw error code or stack trace to the user.
+
+### Point 4: Micro-animations
+Apply these specific transitions:
+- List items: fade-in stagger (50ms delay between items, 200ms duration)
+- Modal/drawer open: slide-up from bottom on mobile, fade+scale on desktop
+- Button press: 96% scale for 100ms on active state
+- Page transitions: 150ms fade between routes
+- Form success: green checkmark animation on submit
+
+### Point 5: Mobile Responsiveness
+{% if tech_profile.primary_platform in ["mobile", "both"] %}
+This app is used on mobile. Verify:
+{% else %}
+Even though this is primarily a desktop app, verify mobile layout:
+{% endif %}
+- All text readable at 320px viewport width (no horizontal scroll)
+- Navigation collapses to hamburger or bottom tabs at ≤768px
+- All interactive elements have 44×44px minimum touch target
+- Forms do not resize when virtual keyboard appears
+- Images use object-fit: cover (no distortion on any screen size)

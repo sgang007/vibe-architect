@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: #F9FAFB; color: #111827; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.2s ease-out; }
+
+@keyframes skeleton { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.skeleton { animation: skeleton 1.5s ease-in-out infinite; background: #E5E7EB; border-radius: 4px; }

@@ -1,0 +1,28 @@
+## Tech Stack
+
+{% set fe = "React Native + Expo" if tech_profile.primary_platform == "mobile" else "React 18 + Vite + TypeScript + Tailwind CSS" %}
+{% if tech_profile.scale_tier == "prototype" %}
+{% set be = "Supabase (PostgreSQL + Auth + Storage + Edge Functions)" %}
+{% elif tech_profile.needs_payments %}
+{% set be = "Node.js + Express + Supabase + Stripe" %}
+{% else %}
+{% set be = "Node.js + Express + Supabase" %}
+{% endif %}
+
+- Frontend: {{ fe }}
+- Backend: {{ be }}
+- Auth: {% if tech_profile.needs_auth %}Supabase Auth (email + Google OAuth){% else %}None required{% endif %}
+
+- Payments: {% if tech_profile.needs_payments %}Stripe ({{ tech_profile.payment_type }}){% else %}None{% endif %}
+
+- UI Components: {% if platform == "v0" %}shadcn/ui{% else %}shadcn/ui + Radix UI{% endif %}
+
+- Icons: Lucide React
+- State: Zustand (global) + TanStack Query (server state)
+{% if tech_profile.integrations %}
+
+### Integrations
+{% for integration in tech_profile.integrations %}
+- {{ integration }}: integrate via official SDK. Store credentials in environment variables.
+{% endfor %}
+{% endif %}

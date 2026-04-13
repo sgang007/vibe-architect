@@ -1,0 +1,19 @@
+# Development override: hot-reload, no model download, faster startup
+services:
+  backend:
+    build:
+      context: ./backend
+      args:
+        BUILD_DOWNLOAD_MODELS: "false"
+    volumes:
+      - ./backend/app:/app/app   # Hot reload
+      - model_cache:/models
+    environment:
+      - ENABLE_NLP_LAYER=false   # Skip model loading for faster dev
+      - APP_ENV=development
+      - LOG_LEVEL=DEBUG
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build: ./frontend
+    # In dev, run frontend locally: cd frontend && npm run dev

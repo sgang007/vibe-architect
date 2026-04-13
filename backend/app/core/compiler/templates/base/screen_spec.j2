@@ -1,0 +1,31 @@
+## Screen Specifications
+
+{% for screen in site_map %}
+### Screen {{ loop.index }}: {{ screen.name }}
+Accessible by: {{ screen.accessible_by | join(", ") }}
+Primary purpose: {{ screen.purpose }}
+
+**Layout Zones:**
+{% for zone in screen.zones %}
+- {{ zone.type }}: {{ zone.description }}
+{% endfor %}
+{% if screen.primary_cta %}
+
+**Primary CTA:** {{ screen.primary_cta.label }} → {{ screen.primary_cta.action }}
+  - Loading state: Show spinner, disable button, label changes to "{{ screen.primary_cta.loading_label }}"
+  - Success state: {{ screen.primary_cta.success_state }}
+  - Error state: Show toast: "{{ screen.primary_cta.error_message }}" with retry option.
+{% endif %}
+
+**Responsive behaviour:**
+- Mobile (320px): {{ screen.responsive.get("mobile", "Single column") }}
+- Tablet (768px): {{ screen.responsive.get("tablet", "Two column") }}
+- Desktop (1280px): {{ screen.responsive.get("desktop", "Full layout") }}
+{% if "EMPTY_STATE" in screen.ux_flags and screen.empty_state_message %}
+
+**Empty state (required):** Show an illustration and the message "{{ screen.empty_state_message }}".
+Include a single CTA: "{{ screen.empty_state_cta }}".
+{% endif %}
+
+---
+{% endfor %}

@@ -1,0 +1,31 @@
+## API Contracts
+
+Base URL: /api/v1
+Auth: {% if tech_profile.needs_auth %}Bearer token (Supabase JWT) in Authorization header{% else %}None required{% endif %}
+
+{% for feature in features %}
+### {{ feature.name }} Endpoints
+
+POST /{{ feature.id }}
+  Body: { /* {{ feature.name }} fields */ }
+  Returns: { id, created_at, /* fields */ }
+  Auth required: {{ "yes" if tech_profile.needs_auth else "no" }}
+
+GET /{{ feature.id }}
+  Returns: Array of {{ feature.name }} objects
+  Supports: ?limit=20&offset=0&sort=created_at
+
+GET /{{ feature.id }}/:id
+  Returns: Single {{ feature.name }} object
+  Errors: 404 if not found, 403 if not owner
+
+PUT /{{ feature.id }}/:id
+  Body: Partial {{ feature.name }} fields
+  Returns: Updated object
+
+DELETE /{{ feature.id }}/:id
+  Returns: 204 No Content
+
+{% endfor %}
+### Error Response Format
+{ "error": { "code": "string", "message": "string", "details": {} } }

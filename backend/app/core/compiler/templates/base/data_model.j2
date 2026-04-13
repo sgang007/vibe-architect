@@ -1,0 +1,28 @@
+## Data Models
+
+{% for persona in personas %}
+### {{ persona.name }} ({{ persona.role }})
+- Primary device: {{ persona.primary_device }}
+- Tech comfort: {{ persona.tech_comfort }}
+- Usage frequency: {{ persona.usage_frequency }}
+- Power level: {{ persona.power_level }}
+- Success signal: {{ persona.success_signal }}
+{% endfor %}
+
+### Database Schema (Supabase/PostgreSQL)
+
+{% for feature in features %}
+**{{ feature.name }}** table:
+- id: uuid PRIMARY KEY DEFAULT gen_random_uuid()
+- created_at: timestamptz DEFAULT now()
+- updated_at: timestamptz DEFAULT now()
+{% if tech_profile.needs_auth %}
+- user_id: uuid REFERENCES auth.users(id) ON DELETE CASCADE
+{% endif %}
+- {{ feature.id }}_data: jsonb (feature-specific fields)
+{% endfor %}
+
+Enable Row Level Security (RLS) on all tables.
+{% if tech_profile.needs_auth %}
+Policy: Users can only access their own rows (auth.uid() = user_id).
+{% endif %}

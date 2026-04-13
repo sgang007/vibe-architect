@@ -1,0 +1,38 @@
+## Non-Functional Requirements
+
+### Performance
+- First Contentful Paint: < 1.5s on 4G
+- Time to Interactive: < 3s
+- API response time: < 200ms for reads, < 500ms for writes
+- All async operations must show loading state within 100ms
+
+### Security
+{% if tech_profile.needs_auth %}
+- All authenticated routes require valid JWT
+- Implement CSRF protection on all mutation endpoints
+- Store secrets in environment variables, never in code
+- Enable RLS on all Supabase tables
+{% endif %}
+- Sanitise all user input (XSS prevention)
+- Rate limit API endpoints (100 req/min per IP)
+- HTTPS only in production
+
+### Accessibility
+- WCAG 2.1 AA compliance minimum
+- All images have descriptive alt text
+- Form inputs have associated labels
+- Colour contrast ratio ≥ 4.5:1 for all text
+- Keyboard navigation for all interactive elements
+- Screen reader compatible (ARIA labels on icons)
+
+### Reliability
+- Handle network failures gracefully with retry UI
+- Optimistic updates for instant perceived performance
+- Offline detection with user-friendly message
+{% if tech_profile.scale_tier != "prototype" %}
+
+### Scalability ({{ tech_profile.scale_tier }})
+- Target: {{ tech_profile.estimated_users_month1 }} users month 1
+- Database connection pooling enabled
+- Implement pagination for all list endpoints (max 50 items)
+{% endif %}

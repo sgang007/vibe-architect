@@ -1,0 +1,24 @@
+## Build Sequence — Follow this order exactly.
+
+1. Scaffold with {{ tech_stack_fe }} + {{ tech_stack_be }}. Set up folder structure.
+2. Configure all environment variables. Create .env.example.
+{% if tech_profile.needs_auth %}
+3. Set up Supabase project. Run schema migrations. Enable Supabase Auth.
+4. Build authentication: Sign Up, Login, Forgot Password, Email Verify screens.
+5. Implement protected routes. Redirect unauthenticated users to Login.
+{% else %}
+3. Set up Supabase project. Run schema migrations.
+{% endif %}
+{{ loop_start }}. Build shared component library: Button, Input, Card, Modal, Toast, Spinner.
+{{ loop_next }}. Build navigation shell (top nav + {% if tech_profile.primary_platform != "desktop" %}bottom tab nav{% else %}sidebar{% endif %}).
+{% for feature in must_have_features %}
+{{ loop.index + base_step }}. Build {{ feature.name }} screen(s): implement all zones, loading, empty, and error states.
+{% endfor %}
+{% if tech_profile.needs_payments %}
+{{ payments_step }}. Integrate Stripe. Build Checkout, Payment Success, Payment Failed screens.
+{% endif %}
+{{ final_steps_start }}. Apply design system tokens: typography scale, color palette, spacing, border radius.
+{{ final_steps_start + 1 }}. Responsive pass: verify all screens at 320px, 768px, 1280px.
+{{ final_steps_start + 2 }}. Accessibility pass: keyboard nav, ARIA labels, color contrast ≥4.5:1.
+{{ final_steps_start + 3 }}. Write tests for all critical user flows.
+{{ final_steps_start + 4 }}. Verify every Given/When/Then acceptance criterion passes.
